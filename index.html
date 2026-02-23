@@ -4,204 +4,41 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lotérica Progresso</title>
-
-<style>
-body{
-    font-family: Arial, sans-serif;
-    margin:0;
-    background:#f4f6f9;
-}
-
-header{
-    background:#0b5ed7;
-    color:white;
-    text-align:center;
-    padding:20px;
-}
-
-.container{
-    padding:20px;
-    max-width:800px;
-    margin:auto;
-}
-
-.card{
-    background:white;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.1);
-    margin-bottom:20px;
-}
-
-h2{
-    margin-top:0;
-}
-
-.grid{
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-    gap:8px;
-    margin-top:15px;
-}
-
-.number{
-    padding:12px;
-    background:#e9ecef;
-    border-radius:8px;
-    text-align:center;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.number.selected{
-    background:#198754;
-    color:white;
-}
-
-select, input{
-    width:100%;
-    padding:10px;
-    margin-top:10px;
-    margin-bottom:15px;
-    border-radius:8px;
-    border:1px solid #ccc;
-}
-
-button{
-    background:#198754;
-    color:white;
-    padding:12px;
-    border:none;
-    border-radius:8px;
-    width:100%;
-    font-size:16px;
-    cursor:pointer;
-}
-
-button:hover{
-    background:#157347;
-}
-
-.total{
-    font-size:18px;
-    font-weight:bold;
-    margin-top:10px;
-}
-
-.footer{
-    text-align:center;
-    padding:15px;
-    font-size:14px;
-    color:#666;
-}
-</style>
+<link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
 
 <header>
 <h1>🎯 Lotérica Progresso</h1>
-<p>Faça seu pedido de aposta online</p>
 </header>
 
 <div class="container">
 
-<div class="card">
+<label>Escolha o jogo:</label>
+<select id="jogo"></select>
 
-<h2>Mega-Sena</h2>
-<p>Selecione 6 números:</p>
+<div id="infoJogo"></div>
 
 <div class="grid" id="grid"></div>
 
 <div class="total">
-Total: R$ <span id="valor">0.00</span>
+Valor: R$ <span id="valor">0.00</span>
 </div>
 
-<label>Seu nome:</label>
-<input type="text" id="nome" placeholder="Digite seu nome">
+<input type="text" id="nome" placeholder="Seu nome">
 
-<label>Escolha a vendedora:</label>
 <select id="vendedora">
 <option value="5599999999999">Maria</option>
 <option value="5598888888888">Joana</option>
 <option value="5597777777777">Carla</option>
 </select>
 
-<button onclick="enviarPedido()">Enviar Pedido via WhatsApp</button>
+<button onclick="enviarPedido()">Enviar Pedido</button>
 
 </div>
-</div>
 
-<div class="footer">
-⚠️ Pedido válido somente após pagamento e confirmação da aposta física.
-</div>
-
-<script>
-const grid = document.getElementById("grid");
-const valorSpan = document.getElementById("valor");
-let selecionados = [];
-const VALOR_BASE = 5.00; // valor base simples exemplo
-
-// Criar números de 01 a 60
-for(let i=1; i<=60; i++){
-    let div = document.createElement("div");
-    div.classList.add("number");
-    div.innerText = i.toString().padStart(2,"0");
-    div.onclick = function(){
-        toggleNumero(div.innerText, div);
-    };
-    grid.appendChild(div);
-}
-
-function toggleNumero(numero, elemento){
-
-    if(selecionados.includes(numero)){
-        selecionados = selecionados.filter(n => n !== numero);
-        elemento.classList.remove("selected");
-    }else{
-        if(selecionados.length >= 15){
-            alert("Máximo 15 números permitidos.");
-            return;
-        }
-        selecionados.push(numero);
-        elemento.classList.add("selected");
-    }
-
-    calcularValor();
-}
-
-function calcularValor(){
-    if(selecionados.length < 6){
-        valorSpan.innerText = "0.00";
-        return;
-    }
-
-    let valor = VALOR_BASE + (selecionados.length - 6) * 2;
-    valorSpan.innerText = valor.toFixed(2);
-}
-
-function enviarPedido(){
-
-    let nome = document.getElementById("nome").value;
-    let telefone = document.getElementById("vendedora").value;
-
-    if(nome === "" || selecionados.length < 6){
-        alert("Preencha o nome e selecione no mínimo 6 números.");
-        return;
-    }
-
-    let mensagem = "🎯 NOVO PEDIDO DE APOSTA%0A%0A";
-    mensagem += "Cliente: " + nome + "%0A";
-    mensagem += "Jogo: Mega-Sena%0A";
-    mensagem += "Números: " + selecionados.join(", ") + "%0A";
-    mensagem += "Valor Estimado: R$ " + valorSpan.innerText + "%0A%0A";
-    mensagem += "Aguardando confirmação.";
-
-    let url = "https://wa.me/" + telefone + "?text=" + mensagem;
-
-    window.open(url, "_blank");
-}
-</script>
+<script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/app.js"></script>
 
 </body>
 </html>
